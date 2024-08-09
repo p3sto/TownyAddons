@@ -1,0 +1,10 @@
+name: TownyCore
+version: '1.0.0-SNAPSHOT'
+main: io.github.devPesto.townyCore.TownyCore
+api-version: '1.20'
+depend:
+    - Towny
+softdepend:
+    - SiegeWar
+    - Apollo-Bukkit
+    - ProtocolLib

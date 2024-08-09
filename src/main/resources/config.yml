@@ -1,0 +1,27 @@
+#
+#    _______                              _____
+#   |__   __|                            / ____|
+#      | |  ___ __      __ _ __   _   _ | |      ___   _ __  ___
+#      | | / _ \\ \ /\ / /| '_ \ | | | || |     / _ \ | '__|/ _ \
+#      | || (_) |\ V  V / | | | || |_| || |____| (_) || |  |  __/
+#      |_| \___/  \_/\_/  |_| |_| \__, | \_____|\___/ |_|   \___|
+#                                  __/ |
+#                                 |___/
+#
+#    The ultimate Towny expansion plugin for your Towny server!
+#                           Developed by Pesto
+
+expansions:
+
+    # Enables the miner kit i.e. full set of iron armor will give Haste, Fire Resistance and Night Vision effects
+    enable-miner-kit: true
+
+    # Enables 1.9+ PvP combat sounds to be disabled.
+    enable-old-combat-sounds: true
+
+    # Enables integrations with Lunar client providing useful information in combat such as banner waypoints, siege
+    # banner information and indicators for allied players.
+    enable-lunar-integration: true
+
+# Do not modify or things will break
+config-version: 1
