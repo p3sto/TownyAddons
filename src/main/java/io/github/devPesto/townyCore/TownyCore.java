@@ -2,30 +2,30 @@ package io.github.devPesto.townyCore;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import io.github.devPesto.townyCore.command.RallyCommand;
 import io.github.devPesto.townyCore.config.Config;
+import io.github.devPesto.townyCore.expansions.TownyExpansionManager;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
+@Getter
 public final class TownyCore extends JavaPlugin {
-	private @Getter Config configuration;
-	private @Getter TownyExpansionManager expansions;
-	private @Getter ProtocolManager protocol;
-	private BukkitCommandHandler commands;
+	private Config configuration;
+	private TownyExpansionManager expansions;
+	private ProtocolManager protocol;
+	private BukkitCommandHandler commandManager;
 
 	@Override
 	public void onEnable() {
 		this.configuration = new Config(this, "config.yml");
 		this.expansions = new TownyExpansionManager(this);
-		this.commands = BukkitCommandHandler.create(this);
+		this.commandManager = BukkitCommandHandler.create(this);
 
 		if (isProtocolLibEnabled())
 			this.protocol = ProtocolLibrary.getProtocolManager();
 
-		commands.registerBrigadier();
-		commands.register(new RallyCommand());
-
+		commandManager.registerBrigadier();
+		commandManager.setMessagePrefix(getName());
 
 		expansions.registerAllExpansions();
 	}

@@ -1,9 +1,10 @@
-package io.github.devPesto.townyCore;
+package io.github.devPesto.townyCore.expansions;
 
+import io.github.devPesto.townyCore.TownyCore;
 import io.github.devPesto.townyCore.config.Config;
 import io.github.devPesto.townyCore.config.ConfigNode;
-import io.github.devPesto.townyCore.expansions.MinerKitExpansion;
-import io.github.devPesto.townyCore.expansions.OldCombatSoundsExpansion;
+import io.github.devPesto.townyCore.expansions.impl.MinerKitExpansion;
+import io.github.devPesto.townyCore.expansions.impl.OldCombatSoundsExpansion;
 import lombok.Getter;
 
 import java.util.HashMap;

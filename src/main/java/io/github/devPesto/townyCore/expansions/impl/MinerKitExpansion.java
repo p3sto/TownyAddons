@@ -1,7 +1,7 @@
-package io.github.devPesto.townyCore.expansions;
+package io.github.devPesto.townyCore.expansions.impl;
 
 import io.github.devPesto.townyCore.TownyCore;
-import io.github.devPesto.townyCore.TownyExpansion;
+import io.github.devPesto.townyCore.expansions.TownyExpansion;
 import io.github.devPesto.townyCore.listener.MinerKitListener;
 import org.bukkit.event.Listener;
 
