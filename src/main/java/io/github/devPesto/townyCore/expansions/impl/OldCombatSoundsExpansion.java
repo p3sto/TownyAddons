@@ -1,4 +1,4 @@
-package io.github.devPesto.townyCore.expansions;
+package io.github.devPesto.townyCore.expansions.impl;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import io.github.devPesto.townyCore.TownyCore;
-import io.github.devPesto.townyCore.TownyExpansion;
+import io.github.devPesto.townyCore.expansions.TownyExpansion;
 import org.bukkit.Sound;
 
 public class OldCombatSoundsExpansion extends TownyExpansion {
