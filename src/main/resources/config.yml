@@ -16,32 +16,26 @@ expansions:
     # Enables the miner kit i.e. full set of iron armor will give infinite haste, fire resistance and night vision
     enable-miner-kit: true
 
-    # Disables post-1.8 combat sounds.
-    disable-modern-combat-sounds: true
+    # Enables blocking of modern combat sounds.
+    enable-old-combat-sounds: true
 
-    # Enables integrations with players using Lunar client providing useful features
-    lunar-integration:
+    # Enable rallying (Requires Apollo)
+    enable-rallies: true
 
-        # Enable this expansion. All other settings in this section will be ignored if false
-        enabled: true
+    # Enables integrations with players using Lunar client providing useful features (Requires Apollo and SiegeWar to be enabled!)
+    lunar-integrations:
+
+        # Enable the Team module to show allies when entering a siege zone
+        enable-team-indicator: true
+
+        # Enable the rally expansion
+        enable-rallies: true
 
         # When entering the siege zone, players will be able to see the banner using a specific indicator
         # type. The color of the indicator will use SiegeWar's beacon settings even disabled.
         #
         # Indicator types: none, waypoint, beam
         banner-indicator: 'waypoint'
-
-        # Use Lunar's Team module when entering a siege zone (Requires SiegeWar to be installed)
-        team-indicator:
-            #
-
-
-
-
-
-
-
-
 
 # Do not modify or things will break :p
 config-version: 1
