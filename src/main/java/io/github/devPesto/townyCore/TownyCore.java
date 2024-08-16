@@ -21,8 +21,8 @@ public final class TownyCore extends JavaPlugin {
 		this.expansions = new TownyExpansionManager(this);
 		this.commandManager = BukkitCommandHandler.create(this);
 
-		if (isProtocolLibEnabled())
-			this.protocol = ProtocolLibrary.getProtocolManager();
+        commandHandler.registerBrigadier();
+        commandHandler.setMessagePrefix(getName());
 
 		commandManager.registerBrigadier();
 		commandManager.setMessagePrefix(getName());
@@ -39,15 +39,7 @@ public final class TownyCore extends JavaPlugin {
 		return isPluginEnabled("SiegeWar");
 	}
 
-	public boolean isApolloEnabled() {
-		return isPluginEnabled("Apollo-Bukkit");
-	}
-
-	public boolean isProtocolLibEnabled() {
-		return isPluginEnabled("ProtocolLib");
-	}
-
-	private boolean isPluginEnabled(String name) {
-		return getServer().getPluginManager().isPluginEnabled(name);
-	}
+    public boolean isPluginEnabled(String name) {
+        return Bukkit.getPluginManager().getPlugin(name) != null;
+    }
 }

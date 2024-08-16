@@ -26,23 +26,18 @@ public class TownyExpansionManager {
 		loadExpansionsFromConfig();
 	}
 
-	public void registerAllExpansions() {
-		expansionMap.values().forEach(this::registerExpansion);
-	}
-
-//	public void registerExpansion(String name) {
-//		TownyExpansion expansion = expansionMap.getOrDefault(name, null);
-//		if (expansion != null) {
-//			registerExpansion(expansion);
-//		} else
-//			logger.warning("Could not register expansion: " + name);
-//	}
-
-	public void registerExpansion(TownyExpansion expansion) {
-		expansion.registerCommands(plugin);
-		expansion.registerListeners(plugin);
-		logger.info("Successfully registered expansion: " + expansion.getName());
-	}
+    public void registerExpansions() {
+        logger.info("================ [TownyCore] ================");
+        expansionMap.values().forEach(expansion -> {
+            try {
+                expansion.register(plugin);
+                logger.info("Successfully registered module: " + expansion.getName());
+            } catch (MissingDependencyException e) {
+                logger.severe(e.getMessage());
+            }
+        });
+        logger.info("-------------------------------------------");
+    }
 
 	private void loadExpansionsFromConfig() {
 		// Miner Kit
