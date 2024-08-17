@@ -4,15 +4,19 @@ import io.github.devPesto.townyCore.TownyCore;
 import io.github.devPesto.townyCore.objects.MissingDependencyException;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+
 @Getter
 public abstract class TownyExpansion {
-	private final String name;
-	private final String[] dependencies;
+    private final String name;
+    private final String[] dependencies;
 
-	public TownyExpansion(String name, String ... dependencies) {
-		this.name = name;
-		this.dependencies = dependencies;
-	}
+    public TownyExpansion(String name, String... dependencies) {
+        this.name = name;
+        this.dependencies = dependencies;
+    }
 
     public void register(TownyCore plugin) throws MissingDependencyException {
         validateDependencies(plugin);
@@ -47,13 +51,13 @@ public abstract class TownyExpansion {
 
     protected void unregisterListeners(TownyCore plugin) {
 
-	}
+    }
 
-	public void registerCommands(TownyCore plugin) {
+    protected void unregisterCommands(TownyCore plugin) {
 
-	}
+    }
 
-	public void registerPermissions(TownyCore plugin) {
+    protected void unregisterPermissions(TownyCore plugin) {
 
-	}
+    }
 }
