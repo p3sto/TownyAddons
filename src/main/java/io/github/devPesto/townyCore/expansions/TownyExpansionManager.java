@@ -6,7 +6,7 @@ import io.github.devPesto.townyCore.config.ConfigNode;
 import io.github.devPesto.townyCore.expansions.impl.MinerKitExpansion;
 import io.github.devPesto.townyCore.expansions.impl.OldCombatSoundsExpansion;
 import io.github.devPesto.townyCore.expansions.impl.RallyExpansion;
-import io.github.devPesto.townyCore.objects.MissingDependencyException;
+import static io.github.devPesto.townyCore.expansions.TownyExpansion.MissingDependencyException;
 import lombok.Getter;
 
 import java.util.HashMap;

@@ -1,7 +1,6 @@
 package io.github.devPesto.townyCore.expansions;
 
 import io.github.devPesto.townyCore.TownyCore;
-import io.github.devPesto.townyCore.objects.MissingDependencyException;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -59,5 +58,20 @@ public abstract class TownyExpansion {
 
     protected void unregisterPermissions(TownyCore plugin) {
 
+    }
+
+    public static class MissingDependencyException extends RuntimeException {
+
+        public MissingDependencyException() {
+            super();
+        }
+
+        public MissingDependencyException(String message) {
+            super(message);
+        }
+
+        public MissingDependencyException(Throwable cause) {
+            super(cause);
+        }
     }
 }
