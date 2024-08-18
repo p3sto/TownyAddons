@@ -12,19 +12,11 @@ public final class TownyCore extends JavaPlugin {
     private Config configuration;
     private TownyExpansionManager expansions;
     private BukkitCommandHandler commandHandler;
-    private static TownyCore instance;
-
-    private TownyCore() {
-    }
-
-    public static TownyCore getInstance() {
-        if (instance == null)
-            instance = new TownyCore();
-        return instance;
-    }
+    private @Getter static TownyCore instance;
 
     @Override
     public void onEnable() {
+        instance = this;
         this.configuration = new Config(this, "config.yml");
         this.expansions = new TownyExpansionManager(this);
         this.commandHandler = BukkitCommandHandler.create(this);

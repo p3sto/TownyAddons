@@ -1,5 +1,6 @@
 package io.github.devPesto.townyCore.objects;
 
+import com.gmail.goosius.siegewar.objects.Siege;
 import com.lunarclient.apollo.Apollo;
 import com.lunarclient.apollo.common.location.ApolloBlockLocation;
 import com.lunarclient.apollo.module.waypoint.Waypoint;
@@ -11,13 +12,10 @@ import io.github.devPesto.townyCore.util.ApolloUtil;
 import io.github.devPesto.townyCore.util.SchedulerUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.sound.Sound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.awt.*;
 import java.util.Collections;
@@ -32,8 +30,10 @@ public class SiegeRally {
     private Waypoint waypoint;
     private RallyRemovalTask task;
 
-    public SiegeRally() {
+    public SiegeRally(Siege siege) {
         this.viewers = new HashMap<>();
+        updateWaypoint(null, siege.getFlagLocation());
+        this.task = null;
     }
 
     /**
@@ -45,11 +45,12 @@ public class SiegeRally {
     public boolean addRecipient(Player player) {
         UUID id = player.getUniqueId();
         if (!viewers.containsKey(id) && ApolloUtil.hasSupport(player)) {
-            ApolloUtil.getOptPlayer(player).ifPresent(p -> {
-                viewers.put(id, p);
-                task.addViewer(p);
-                module.displayWaypoint(Recipients.of(viewers.values()), waypoint);
-            });
+            ApolloUtil.getOptPlayer(player)
+                    .ifPresent(p -> {
+                        viewers.put(id, p);
+                        if (task != null)
+                            task.addViewer(p);
+                    });
             return true;
         }
         return false;
@@ -61,16 +62,15 @@ public class SiegeRally {
      * @param player The player being added to the viewer map
      * @return {@code true} if the player was removed, otherwise {@code false}
      */
-    public boolean removeRecipient(Player player) {
+    public void removeRecipient(Player player) {
         UUID id = player.getUniqueId();
         if (viewers.containsKey(id)) {
             ApolloPlayer apollo = viewers.get(id);
-            module.removeWaypoint(Recipients.of(Collections.singleton(apollo)), waypoint);
-            task.removeViewer(apollo);
             viewers.remove(id);
-            return true;
+            module.removeWaypoint(Recipients.of(Collections.singleton(apollo)), waypoint);
+            if (task != null)
+                task.removeViewer(apollo);
         }
-        return false;
     }
 
     /**
@@ -79,44 +79,44 @@ public class SiegeRally {
      * @param caller The player who called for the updated location
      * @apiNote Use {@link #addRecipient(Player)} to add to the viewer list
      */
-    public void update(Player caller) {
+    public void send(Player caller) {
         Location location = caller.getLocation();
         if (viewers.containsKey(caller.getUniqueId()) || addRecipient(caller)) {
             module.removeWaypoint(Recipients.of(viewers.values()), waypoint);
-            waypoint = Waypoint.builder()
-                    .location(ApolloBlockLocation.builder()
-                            .world(location.getWorld().getName())
-                            .x(location.getBlockX())
-                            .y(location.getBlockY())
-                            .z(location.getBlockZ())
-                            .build())
-                    .color(new Color(0xFFAA00))
-                    .preventRemoval(true)
-                    .build();
+            updateWaypoint(caller, location);
             module.displayWaypoint(Recipients.of(viewers.values()), waypoint);
-
-            // Send message and play rally sound
-            viewers.values().forEach(p -> {
-                // TODO: Move to messages.yml
-                String strLoc = String.format("X:%d, Y:%d, Z:%d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
-                Player player = (Player) p.getPlayer();
-                player.sendMessage(caller.getName() + " has updated the rally to " + strLoc);
-
-                // Play horn sound for rally
-                // TODO: Investigate why sound doesn't stay with player
-                Key key = Key.key("entity.experience_orb.pickup");
-                Sound sound = Sound.sound(key, Sound.Source.PLAYER, 2f, 1f);
-                player.playSound(sound);
-            });
             rescheduleTask();
         }
     }
 
     public void rescheduleTask() {
-        BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.cancelTask(task.getTaskId());
+        // May be first rally call
+        if (task != null)
+            Bukkit.getScheduler().cancelTask(task.getTaskId());
+
+        // Waypoint cannot be null at this point
         this.task = new RallyRemovalTask(viewers, waypoint);
-        task.runTaskLater(TownyCore.getInstance(), SchedulerUtil.toTicks(10, TimeUnit.MINUTES));
+        task.runTaskLater(TownyCore.getInstance(), SchedulerUtil.toTicks(15, TimeUnit.SECONDS));
+    }
+
+    private void updateWaypoint(Player player, Location location) {
+        String name = "Siege Banner";
+        if (player != null) {
+            location = player.getLocation();
+            name = player.getName();
+        }
+
+        this.waypoint = Waypoint.builder()
+                .location(ApolloBlockLocation.builder()
+                        .world(location.getWorld().getName())
+                        .x(location.getBlockX())
+                        .y(location.getBlockY())
+                        .z(location.getBlockZ())
+                        .build())
+                .name(name)
+                .color(new Color(0xFFAA00))
+                .preventRemoval(true)
+                .build();
     }
 
     @Getter
