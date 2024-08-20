@@ -17,6 +17,7 @@ import java.util.Set;
 import static org.bukkit.potion.PotionEffect.INFINITE_DURATION;
 import static org.bukkit.potion.PotionEffectType.*;
 
+// TODO: Add enable/disable messages. Investigate why event triggers on damage
 public class MinerKitListener implements Listener {
 
 	/**
@@ -62,7 +63,6 @@ public class MinerKitListener implements Listener {
 			}
 		}
 		player.addPotionEffects(kitEffects);
-		player.sendMessage("Miner Kit has been enabled");
 	}
 
 	/**
@@ -70,7 +70,6 @@ public class MinerKitListener implements Listener {
 	 */
 	private void removeEffects(Player player) {
 		kitEffects.forEach(effect -> player.removePotionEffect(effect.getType()));
-		player.sendMessage("Miner kit has been disabled");
 	}
 
 	private static final Map<Material, EquipmentSlot> minerKitMap = Map.of(
