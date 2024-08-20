@@ -60,7 +60,6 @@ public class SiegeRally {
      * Removes a {@link Player} recipient from the viewer map and hides any visible rallies
      *
      * @param player The player being added to the viewer map
-     * @return {@code true} if the player was removed, otherwise {@code false}
      */
     public void removeRecipient(Player player) {
         UUID id = player.getUniqueId();
@@ -96,7 +95,7 @@ public class SiegeRally {
 
         // Waypoint cannot be null at this point
         this.task = new RallyRemovalTask(viewers, waypoint);
-        task.runTaskLater(TownyCore.getInstance(), SchedulerUtil.toTicks(15, TimeUnit.SECONDS));
+        task.runTaskLater(TownyCore.getInstance(), SchedulerUtil.toTicks(10, TimeUnit.MINUTES));
     }
 
     private void updateWaypoint(Player player, Location location) {
