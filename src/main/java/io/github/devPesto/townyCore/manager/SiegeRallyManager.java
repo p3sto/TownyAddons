@@ -1,6 +1,5 @@
 package io.github.devPesto.townyCore.manager;
 
-import com.comphenix.protocol.PacketType;
 import com.gmail.goosius.siegewar.SiegeWarAPI;
 import com.gmail.goosius.siegewar.enums.SiegeSide;
 import com.gmail.goosius.siegewar.objects.Siege;
@@ -9,7 +8,6 @@ import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import io.github.devPesto.townyCore.objects.SiegeRally;
-import io.github.devPesto.townyCore.util.Pair;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Location;
@@ -95,13 +93,13 @@ public class SiegeRallyManager {
         players.forEach(p -> {
             // TODO: Move to messages.yml
             String strLoc = String.format("X:%d , Y:%d, Z:%d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
-            player.sendMessage(player.getName() + " has updated the rally to " + strLoc);
+            p.sendMessage(player.getName() + " has updated the rally to " + strLoc);
 
             // Play horn sound for rally
             // TODO: Investigate why sound doesn't stay with player
             Key key = Key.key("entity.experience_orb.pickup");
-            Sound sound = Sound.sound(key, Sound.Source.PLAYER, 2f, 1f);
-            player.playSound(sound);
+            Sound sound = Sound.sound(key, Sound.Source.PLAYER, 1f, 1f);
+            p.playSound(sound);
         });
     }
 

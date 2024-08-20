@@ -51,7 +51,7 @@ public class TownyExpansionManager {
 
         // Rallies
         if (config.getBoolean(ConfigNode.EXPANSION_ENABLE_RALLIES))
-            map.put("SiegeRally", new RallyExpansion());
+            map.put("SiegeRally", new SiegeRallyExpansion());
 
         return map;
     }
