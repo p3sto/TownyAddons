@@ -1,5 +1,6 @@
 package io.github.devPesto.townyCore;
 
+import io.github.devPesto.townyCore.commands.TownyCoreCommand;
 import io.github.devPesto.townyCore.config.impl.MessageConfiguration;
 import io.github.devPesto.townyCore.config.impl.PluginConfiguration;
 import io.github.devPesto.townyCore.expansions.TownyExpansionManager;
@@ -24,10 +25,10 @@ public final class TownyCore extends JavaPlugin {
         this.expansions = new TownyExpansionManager(this);
         this.commandHandler = BukkitCommandHandler.create(this);
 
-        commandHandler.registerBrigadier();
-        commandHandler.setMessagePrefix(getName());
-
         expansions.registerExpansions();
+        commandHandler.setMessagePrefix(messaging.getLegacyPrefix());
+        commandHandler.register(new TownyCoreCommand(this));
+        commandHandler.registerBrigadier();
     }
 
     @Override
