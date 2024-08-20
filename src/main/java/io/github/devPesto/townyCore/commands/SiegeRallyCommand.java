@@ -2,12 +2,12 @@ package io.github.devPesto.townyCore.commands;
 
 import com.gmail.goosius.siegewar.SiegeWarAPI;
 import com.gmail.goosius.siegewar.objects.Siege;
+import io.github.devPesto.townyCore.TownyCore;
+import io.github.devPesto.townyCore.config.impl.MessageConfiguration;
+import io.github.devPesto.townyCore.config.impl.MessageNode;
 import io.github.devPesto.townyCore.manager.SiegeRallyManager;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.DefaultFor;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command("rally")
@@ -15,17 +15,19 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @CommandPermission("townycore.command.rally")
 public class SiegeRallyCommand {
     private final SiegeRallyManager manager;
+    private final MessageConfiguration messaging;
 
     public SiegeRallyCommand(SiegeRallyManager manager) {
         this.manager = manager;
+        this.messaging = TownyCore.getInstance().getMessaging();
     }
 
     @DefaultFor("rally")
-//    @Cooldown(value = 90)
+    @Cooldown(value = 10)
     protected void rally(Player player) {
         Siege siege = SiegeWarAPI.getActiveSiegeAtLocation(player);
         if (siege == null || !siege.getStatus().isActive()) {
-            player.sendMessage("You are not in an active siege zone or the siege is inactive"); // TODO: Move to message.yml
+            messaging.sendMessage(player, MessageNode.RALLY_INACTIVE_SIEGE);
             return;
         }
         manager.resendRallyLocation(siege, player);

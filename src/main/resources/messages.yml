@@ -1,0 +1,16 @@
+# All messages support the Mini-Message format
+# See https://docs.advntr.dev/minimessage/format.html for more information
+
+prefix: <dark_gray>[<dark_aqua>Megacy<dark_gray>] <gray>
+
+rally:
+    inactive-siege: You are not in an active siege zone or the siege is inactive
+    non-participant: You are not part of this siege
+    enabled: You have enabled siege rallies
+    disabled: You have disabled siege rallies
+    already-enabled: You already have siege rallies enabled
+    already-disabled: You already have siege rallies disabled
+    updated-location: <gold>%player%<gray> has updated the rally to <gold>%location%
+
+# DO NOT MODIFY
+config-version: 1

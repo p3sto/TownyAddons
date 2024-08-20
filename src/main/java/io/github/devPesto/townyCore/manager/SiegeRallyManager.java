@@ -7,7 +7,11 @@ import com.gmail.goosius.siegewar.utils.SiegeWarDistanceUtil;
 import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
+import io.github.devPesto.townyCore.TownyCore;
+import io.github.devPesto.townyCore.config.impl.MessageConfiguration;
+import io.github.devPesto.townyCore.config.impl.MessageNode;
 import io.github.devPesto.townyCore.objects.SiegeRally;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Location;
@@ -19,10 +23,12 @@ import java.util.stream.Collectors;
 public class SiegeRallyManager {
     private final Map<Siege, SiegeRallies> siegeRallies;
     private final Map<UUID, Player> ignoredPlayers;
+    private final MessageConfiguration messaging;
 
     public SiegeRallyManager() {
         this.siegeRallies = new HashMap<>();
         this.ignoredPlayers = new HashMap<>();
+        this.messaging = TownyCore.getInstance().getMessaging();
     }
 
     /**
@@ -71,14 +77,14 @@ public class SiegeRallyManager {
     public void resendRallyLocation(Siege siege, Player player) {
         // Ignore if rallies are disabled for the player
         if (ignoredPlayers.containsKey(player.getUniqueId())) {
-            player.sendMessage("You have rallies disabled");
+            messaging.sendMessage(player, MessageNode.RALLY_DISABLED);
             return;
         }
 
         // Determine if the player is able to rally
         SiegeRally rally = getRally(siege, player);
         if (rally == null) {
-            player.sendMessage("You are not part of this siege");
+            messaging.sendMessage(player, MessageNode.RALLY_NON_PARTICIPANT);
             return;
         }
 
@@ -92,14 +98,12 @@ public class SiegeRallyManager {
         // Send message and play rally sound
         players.forEach(p -> {
             // TODO: Move to messages.yml
-            String strLoc = String.format("X:%d , Y:%d, Z:%d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
-            p.sendMessage(player.getName() + " has updated the rally to " + strLoc);
-
-            // Play horn sound for rally
-            // TODO: Investigate why sound doesn't stay with player
-            Key key = Key.key("entity.experience_orb.pickup");
-            Sound sound = Sound.sound(key, Sound.Source.PLAYER, 1f, 1f);
-            p.playSound(sound);
+            String strLoc = String.format("%d, %d, %d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
+            messaging.sendMessage(p, MessageNode.RALLY_UPDATED_LOCATION, Map.of(
+                    "%player%", p.getName(),
+                    "%location%", strLoc
+            ));
+            playNotificationSound(p, false);
         });
     }
 
@@ -110,7 +114,7 @@ public class SiegeRallyManager {
      */
     public void enableRallyNotifications(Player player) {
         if (!ignoredPlayers.containsKey(player.getUniqueId())) {
-            player.sendMessage("You already have rallies enabled");
+            messaging.sendMessage(player, MessageNode.RALLY_ALREADY_ENABLED);
             return;
         }
 
@@ -118,11 +122,8 @@ public class SiegeRallyManager {
         // Resident resident = TownyAPI.getInstance().getResident(player);
 
         ignoredPlayers.remove(player.getUniqueId());
-        player.sendMessage("Rallies have been enabled");
-
-        Key key = Key.key("entity.experience_orb.pickup");
-        Sound sound = Sound.sound(key, Sound.Source.PLAYER, 2f, 1f);
-        player.playSound(sound);
+        messaging.sendMessage(player, MessageNode.RALLY_ENABLED);
+        playNotificationSound(player, false);
     }
 
     /**
@@ -132,7 +133,7 @@ public class SiegeRallyManager {
      */
     public void disableRallyNotifications(Player player) {
         if (ignoredPlayers.containsKey(player.getUniqueId())) {
-            player.sendMessage("You already have rallies disabled");
+            messaging.sendMessage(player, MessageNode.RALLY_ALREADY_DISABLED);
             return;
         }
         ignoredPlayers.put(player.getUniqueId(), player);
@@ -140,7 +141,7 @@ public class SiegeRallyManager {
         // TODO: Add persistence to rally settings using Towny's metadata api
         // Resident resident = TownyAPI.getInstance().getResident(player);
 
-        player.sendMessage("Rallies have been disabled");
+        messaging.sendMessage(player, MessageNode.RALLY_DISABLED);
         for (Siege siege : SiegeWarAPI.getSieges()) {
             SiegeRally rally = getRally(siege, player);
             if (rally != null) {
@@ -148,16 +149,20 @@ public class SiegeRallyManager {
                 break;
             }
         }
+        playNotificationSound(player, true);
 
-        Key key = Key.key("entity.experience_orb.pickup");
-        Sound sound = Sound.sound(key, Sound.Source.PLAYER, 2f, 0.01f);
-        player.playSound(sound);
     }
 
 
     private SiegeRally getRally(Siege siege, Player player) {
         SiegeSide side = SiegeSide.getPlayerSiegeSide(siege, player);
         return siegeRallies.get(siege).getRally(side);
+    }
+
+    private void playNotificationSound(Audience audience, boolean negative) {
+        Key key = Key.key("entity.experience_orb.pickup");
+        Sound sound = Sound.sound(key, Sound.Source.PLAYER, 1f, negative ? 0.01f : 1f);
+        audience.playSound(sound);
     }
 
     /**
