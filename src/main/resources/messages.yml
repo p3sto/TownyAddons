@@ -10,7 +10,7 @@ rally:
     disabled: You have disabled siege rallies
     already-enabled: You already have siege rallies enabled
     already-disabled: You already have siege rallies disabled
-    updated-location: <gold>%player%<gray> has updated the rally to <gold>%location%
+    updated-location: <gold>%player%<gray> has updated the rally to <gold>%location% <gray>and will despawn in 10 minutes
 
 # DO NOT MODIFY
 config-version: 1
