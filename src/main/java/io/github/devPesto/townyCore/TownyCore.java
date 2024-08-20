@@ -1,6 +1,7 @@
 package io.github.devPesto.townyCore;
 
-import io.github.devPesto.townyCore.config.Config;
+import io.github.devPesto.townyCore.config.impl.MessageConfiguration;
+import io.github.devPesto.townyCore.config.impl.PluginConfiguration;
 import io.github.devPesto.townyCore.expansions.TownyExpansionManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -9,7 +10,8 @@ import revxrsal.commands.bukkit.BukkitCommandHandler;
 
 @Getter
 public final class TownyCore extends JavaPlugin {
-    private Config configuration;
+    private PluginConfiguration configuration;
+    private MessageConfiguration messaging;
     private TownyExpansionManager expansions;
     private BukkitCommandHandler commandHandler;
     private @Getter static TownyCore instance;
@@ -17,7 +19,8 @@ public final class TownyCore extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        this.configuration = new Config(this, "config.yml");
+        this.configuration = new PluginConfiguration(this);
+        this.messaging = new MessageConfiguration(this);
         this.expansions = new TownyExpansionManager(this);
         this.commandHandler = BukkitCommandHandler.create(this);
 

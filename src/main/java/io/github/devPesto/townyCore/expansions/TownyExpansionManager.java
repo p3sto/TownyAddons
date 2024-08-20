@@ -2,7 +2,7 @@ package io.github.devPesto.townyCore.expansions;
 
 import io.github.devPesto.townyCore.TownyCore;
 import io.github.devPesto.townyCore.config.Config;
-import io.github.devPesto.townyCore.config.ConfigNode;
+import io.github.devPesto.townyCore.config.impl.PluginNode;
 import io.github.devPesto.townyCore.expansions.impl.MinerKitExpansion;
 import io.github.devPesto.townyCore.expansions.impl.OldCombatSoundsExpansion;
 import io.github.devPesto.townyCore.expansions.impl.SiegeRallyExpansion;
@@ -42,15 +42,15 @@ public class TownyExpansionManager {
     private Map<String, TownyExpansion> loadExpansions() {
         // Miner Kit
         Map<String, TownyExpansion> map = new HashMap<>();
-        if (config.getBoolean(ConfigNode.EXPANSION_ENABLE_MINER_KIT))
+        if (config.getBoolean(PluginNode.EXPANSION_ENABLE_MINER_KIT))
             map.put("MinerKit", new MinerKitExpansion());
 
         // OldCombatSounds
-        if (config.getBoolean(ConfigNode.EXPANSION_ENABLE_OC_SOUNDS))
+        if (config.getBoolean(PluginNode.EXPANSION_ENABLE_OC_SOUNDS))
             map.put("OldCombatSounds", new OldCombatSoundsExpansion());
 
         // Rallies
-        if (config.getBoolean(ConfigNode.EXPANSION_ENABLE_RALLIES))
+        if (config.getBoolean(PluginNode.EXPANSION_ENABLE_RALLIES))
             map.put("SiegeRally", new SiegeRallyExpansion());
 
         return map;

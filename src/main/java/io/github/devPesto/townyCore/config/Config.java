@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-public class Config {
+public abstract class Config {
 	private final String filePath;
 	private final Logger logger;
-	private @Getter YamlDocument config;
+	protected @Getter YamlDocument config;
 
 	public Config(Plugin plugin, String filePath) {
 		this.filePath = filePath;
@@ -53,27 +53,27 @@ public class Config {
 		}
 	}
 
-	public boolean getBoolean(ConfigNode node) {
+	public boolean getBoolean(Node node) {
 		return config.getBoolean(node.getPath(), false);
 	}
 
-	public int getInt(ConfigNode node) {
+	public int getInt(Node node) {
 		return config.getInt(node.getPath(), 0);
 	}
 
-	public long getLong(ConfigNode node) {
+	public long getLong(Node node) {
 		return config.getLong(node.getPath(), 0L);
 	}
 
-	public float getFloat(ConfigNode node) {
+	public float getFloat(Node node) {
 		return config.getFloat(node.getPath(), 0.0f);
 	}
 
-	public double getDouble(ConfigNode node) {
+	public double getDouble(Node node) {
 		return config.getDouble(node.getPath(), 0.0);
 	}
 
-	public String getString(ConfigNode node) {
+	public String getString(Node node) {
 		return config.getString(node.getPath(), "");
 	}
 }
