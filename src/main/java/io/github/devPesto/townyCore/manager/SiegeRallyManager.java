@@ -152,10 +152,10 @@ public class SiegeRallyManager {
 
     }
 
-
     private SiegeRally getRally(Siege siege, Player player) {
         SiegeSide side = SiegeSide.getPlayerSiegeSide(siege, player);
-        return siegeRallies.get(siege).getRally(side);
+        SiegeRallies rallies = siegeRallies.get(siege);
+        return rallies != null ? rallies.getRally(side) : null;
     }
 
     private void playNotificationSound(Audience audience, boolean negative) {
