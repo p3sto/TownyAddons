@@ -97,10 +97,9 @@ public class SiegeRallyManager {
 
         // Send message and play rally sound
         players.forEach(p -> {
-            // TODO: Move to messages.yml
             String strLoc = String.format("%d, %d, %d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
             messaging.sendMessage(p, MessageNode.RALLY_UPDATED_LOCATION, Map.of(
-                    "%player%", p.getName(),
+                    "%player%", player.getName(),
                     "%location%", strLoc
             ));
             playNotificationSound(p, false);
