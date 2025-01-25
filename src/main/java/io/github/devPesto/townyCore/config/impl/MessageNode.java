@@ -1,11 +1,7 @@
 package io.github.devPesto.townyCore.config.impl;
 
 import io.github.devPesto.townyCore.config.Node;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
 public enum MessageNode implements Node {
     PREFIX("prefix"),
 
@@ -20,6 +16,12 @@ public enum MessageNode implements Node {
 
     private final String path;
 
+    MessageNode(String path) {
+        this.path = path;
+    }
 
-
+    @Override
+    public String getPath() {
+        return path;
+    }
 }

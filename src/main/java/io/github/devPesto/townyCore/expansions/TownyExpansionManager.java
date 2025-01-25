@@ -6,15 +6,15 @@ import io.github.devPesto.townyCore.config.impl.PluginNode;
 import io.github.devPesto.townyCore.expansions.impl.MinerKitExpansion;
 import io.github.devPesto.townyCore.expansions.impl.OldCombatSoundsExpansion;
 import io.github.devPesto.townyCore.expansions.impl.SiegeRallyExpansion;
-import static io.github.devPesto.townyCore.expansions.TownyExpansion.MissingDependencyException;
-import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static io.github.devPesto.townyCore.expansions.TownyExpansion.MissingDependencyException;
+
 public class TownyExpansionManager {
-    private @Getter Map<String, TownyExpansion> expansionMap;
+    private final Map<String, TownyExpansion> expansionMap;
     private final TownyCore plugin;
     private final Logger logger;
     private final Config config;
@@ -24,6 +24,10 @@ public class TownyExpansionManager {
         this.logger = plugin.getLogger();
         this.config = plugin.getConfiguration();
         this.expansionMap = loadExpansions();
+    }
+
+    public Map<String, TownyExpansion> getExpansions() {
+        return expansionMap;
     }
 
     public void registerExpansions() {

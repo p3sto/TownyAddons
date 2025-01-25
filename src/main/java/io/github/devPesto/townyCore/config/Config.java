@@ -6,7 +6,6 @@ import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
 import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
-import lombok.Getter;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -17,7 +16,7 @@ import java.util.logging.Logger;
 public abstract class Config {
 	private final String filePath;
 	private final Logger logger;
-	protected @Getter YamlDocument config;
+	protected YamlDocument config;
 
 	public Config(Plugin plugin, String filePath) {
 		this.filePath = filePath;
@@ -42,6 +41,9 @@ public abstract class Config {
 		return config;
 	}
 
+	public YamlDocument getConfig() {
+		return config;
+	}
 
 	public void reload(Plugin plugin) {
 		try {

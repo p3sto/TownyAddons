@@ -1,20 +1,17 @@
 package io.github.devPesto.townyCore.expansions;
 
 import io.github.devPesto.townyCore.TownyCore;
-import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-@Getter
 public abstract class TownyExpansion {
     private final String name;
-    private final String[] dependencies;
+    private final List<String> dependencies;
 
     public TownyExpansion(String name, String... dependencies) {
         this.name = name;
-        this.dependencies = dependencies;
+        this.dependencies = List.of(dependencies);
     }
 
     public void register(TownyCore plugin) throws MissingDependencyException {
@@ -26,7 +23,7 @@ public abstract class TownyExpansion {
 
 
     protected void validateDependencies(TownyCore plugin) throws MissingDependencyException {
-        List<String> missing = Arrays.stream(dependencies)
+        List<String> missing = dependencies.stream()
                 .filter(Predicate.not(plugin::isPluginEnabled))
                 .toList();
 
@@ -36,29 +33,25 @@ public abstract class TownyExpansion {
         }
     }
 
-    protected void registerListeners(TownyCore plugin) {
-
+    public String getName() {
+        return name;
     }
 
-    protected void registerCommands(TownyCore plugin) {
-
+    public List<String> getDependencies() {
+        return dependencies;
     }
 
-    protected void registerPermissions(TownyCore plugin) {
+    protected void registerListeners(TownyCore plugin) {}
 
-    }
+    protected void registerCommands(TownyCore plugin) {}
 
-    protected void unregisterListeners(TownyCore plugin) {
+    protected void registerPermissions(TownyCore plugin) {}
 
-    }
+    protected void unregisterListeners(TownyCore plugin) {}
 
-    protected void unregisterCommands(TownyCore plugin) {
+    protected void unregisterCommands(TownyCore plugin) {}
 
-    }
-
-    protected void unregisterPermissions(TownyCore plugin) {
-
-    }
+    protected void unregisterPermissions(TownyCore plugin) {}
 
     public static class MissingDependencyException extends RuntimeException {
 

@@ -2,7 +2,6 @@ package io.github.devPesto.townyCore.commands;
 
 import io.github.devPesto.townyCore.TownyCore;
 import io.github.devPesto.townyCore.config.impl.MessageConfiguration;
-import lombok.AllArgsConstructor;
 import org.bukkit.command.CommandSender;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Subcommand;
@@ -10,9 +9,12 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({"townycore", "tcore", "tc"})
 @CommandPermission("townycore.command")
-@AllArgsConstructor
 public class TownyCoreCommand {
-    private TownyCore plugin;
+    private final TownyCore plugin;
+
+    public TownyCoreCommand(TownyCore plugin) {
+        this.plugin = plugin;
+    }
 
     @Subcommand("reload")
     @CommandPermission("townycore.command.reload")
@@ -28,9 +30,9 @@ public class TownyCoreCommand {
     }
 
     private void reloadMessages() {
-        MessageConfiguration messaging = plugin.getMessaging();
+        MessageConfiguration messaging = plugin.getLangConfiguration();
         messaging.reload(plugin);
-        plugin.getCommandHandler().setMessagePrefix(messaging.getLegacyPrefix());
+        // plugin.getCommandHandler().setMessagePrefix(messaging.getLegacyPrefix());
     }
 
     private void reloadConfig() {
@@ -38,7 +40,7 @@ public class TownyCoreCommand {
     }
 
     public enum ReloadType {
-        ALL, CONFIG, MESSAGES;
+        ALL, CONFIG, MESSAGES
     }
 
 

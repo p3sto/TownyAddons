@@ -1,11 +1,7 @@
 package io.github.devPesto.townyCore.config.impl;
 
 import io.github.devPesto.townyCore.config.Node;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
 public enum PluginNode implements Node {
 	EXPANSION_ENABLE_MINER_KIT("expansions.enable-miner-kit"),
 	EXPANSION_ENABLE_OC_SOUNDS("expansions.enable-old-combat-sounds"),
@@ -13,4 +9,13 @@ public enum PluginNode implements Node {
 	;
 
 	private final String path;
+
+	PluginNode(String path) {
+		this.path = path;
+	}
+
+	@Override
+	public String getPath() {
+		return path;
+	}
 }
