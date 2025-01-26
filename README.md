@@ -2,8 +2,6 @@
 
 A suite of common utilites and additions to add to your Towny servers. This plugin is perfect for server admins who want something highly configurable, lightweight and delivers quality of life improvements and additions to your server.
 
-<br>
-
 ## Included Addons:
 
 ### Siege Rally
