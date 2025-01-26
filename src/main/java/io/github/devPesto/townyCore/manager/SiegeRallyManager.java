@@ -4,12 +4,14 @@ import com.gmail.goosius.siegewar.SiegeWarAPI;
 import com.gmail.goosius.siegewar.enums.SiegeSide;
 import com.gmail.goosius.siegewar.objects.Siege;
 import com.gmail.goosius.siegewar.utils.SiegeWarDistanceUtil;
+import com.lunarclient.apollo.player.ApolloPlayer;
 import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import io.github.devPesto.townyCore.TownyCore;
-import io.github.devPesto.townyCore.config.impl.MessageConfiguration;
-import io.github.devPesto.townyCore.config.impl.MessageNode;
+import io.github.devPesto.townyCore.config.impl.LangConfiguration;
+import io.github.devPesto.townyCore.config.impl.LangNodes;
+import io.github.devPesto.townyCore.objects.LunarPlayer;
 import io.github.devPesto.townyCore.objects.SiegeRally;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
@@ -21,189 +23,198 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SiegeRallyManager {
-    private final Map<Siege, SiegeRallies> siegeRallies;
-    private final Map<UUID, Player> ignoredPlayers;
-    private final MessageConfiguration messaging;
+	private final Map<Siege, SiegeRallies> siegeRallies = new HashMap<>();
+	private final Map<UUID, ApolloPlayer> ignoredPlayers = new HashMap<>();
+	private final LangConfiguration messaging;
 
-    public SiegeRallyManager() {
-        this.siegeRallies = new HashMap<>();
-        this.ignoredPlayers = new HashMap<>();
-        this.messaging = TownyCore.getInstance().getMessaging();
-    }
+	public SiegeRallyManager() {
+		this.messaging = TownyCore.getInstance().getLangConfiguration();
+	}
 
-    /**
-     * Register {@link SiegeRally} instance for the passed in siege
-     *
-     * @param siege
-     */
-    public void registerRally(Siege siege) {
-        if (siege.getStatus().isActive())
-            siegeRallies.put(siege, new SiegeRallies(siege));
-    }
+	/**
+	 * Register {@link SiegeRally} instance for the passed in siege
+	 *
+	 * @param siege
+	 */
+	public void registerRally(Siege siege) {
+		if (siege.getStatus().isActive())
+			siegeRallies.put(siege, new SiegeRallies(siege));
+	}
 
-    /**
-     * Register {@link SiegeRally} instances for all active sieges
-     */
-    public void registerRallies() {
-        SiegeWarAPI.getSieges().forEach(this::registerRally);
-    }
+	/**
+	 * Register {@link SiegeRally} instances for all active sieges
+	 */
+	public void registerRallies() {
+		SiegeWarAPI.getSieges().forEach(this::registerRally);
+	}
 
-    public void addViewer(Player player) {
-        Siege siege = SiegeWarDistanceUtil.getActiveSiegeZonePlayerIsRegisteredTo(player);
-        if (siege == null)
-            return;
+	/**
+	 * Determines if a player should be able to view a rally
+	 *
+	 * @param player A {@link LunarPlayer} playing on Lunar client
+	 */
+	public void addViewer(LunarPlayer player) {
+		Siege siege = SiegeWarDistanceUtil.getActiveSiegeZonePlayerIsRegisteredTo(player.asPlayer());
+		if (siege == null)
+			return;
 
-        // Ignore if not part of siege
-        SiegeRally rally = getRally(siege, player);
-        if (rally != null) {
-            rally.addRecipient(player);
-        }
-    }
+		// Ignore if not part of siege
+		SiegeRally rally = getRally(siege, player);
+		if (rally != null) {
+			rally.addRecipient(player);
+		}
+	}
 
-    public void removeViewer(Player player) {
-        SiegeWarAPI.getSieges().forEach(siege -> {
-            SiegeRally rally = getRally(siege, player);
-            if (rally != null)
-                rally.removeRecipient(player);
-        });
-    }
+	/**
+	 * Removes a player from viewing a rally
+	 * @param player
+	 */
+	public void removeViewer(LunarPlayer player) {
+		SiegeWarAPI.getSieges().forEach(siege -> {
+			SiegeRally rally = getRally(siege, player);
+			if (rally != null)
+				rally.removeRecipient(player);
+		});
+	}
 
-    /**
-     * Resend the location of the rally point
-     *
-     * @param siege  The siege the rally belongs to
-     * @param player The player responsible for calling the resend
-     */
-    public void resendRallyLocation(Siege siege, Player player) {
-        // Ignore if rallies are disabled for the player
-        if (ignoredPlayers.containsKey(player.getUniqueId())) {
-            messaging.sendMessage(player, MessageNode.RALLY_DISABLED);
-            return;
-        }
+	/**
+	 * Resend the location of the rally point
+	 *
+	 * @param siege  The siege the rally belongs to
+	 * @param player The player responsible for calling the resend
+	 */
+	public void resendRallyLocation(Siege siege, LunarPlayer player) {
+		Player p = player.asPlayer();
+		// Ignore if rallies are disabled for the player
+		if (ignoredPlayers.containsKey(player.getUniqueId())) {
+			messaging.sendMessage(p, LangNodes.RALLY_DISABLED);
+			return;
+		}
 
-        // Determine if the player is able to rally
-        SiegeRally rally = getRally(siege, player);
-        if (rally == null) {
-            messaging.sendMessage(player, MessageNode.RALLY_NON_PARTICIPANT);
-            return;
-        }
+		// Determine if the player is able to rally
+		SiegeRally rally = getRally(siege, player);
+		if (rally == null) {
+			messaging.sendMessage(player.asPlayer(), LangNodes.RALLY_NON_PARTICIPANT);
+			return;
+		}
 
-        // Update the waypoint for Lunar players
-        rally.send(player);
+		// Update the waypoint for Lunar players
+		rally.send(player);
 
-        // Send message and play sound to all players (both Lunar and non-Lunar)
-        Location location = player.getLocation();
-        Set<Player> players = determineRecipients(siege, SiegeSide.getPlayerSiegeSide(siege, player));
+		// Send message and play sound to all players (both Lunar and non-Lunar)
+		Location location = player.getBukkitLocation();
+		Set<Player> players = determineRecipients(siege, SiegeSide.getPlayerSiegeSide(siege, p));
 
-        // Send message and play rally sound
-        players.forEach(p -> {
-            String strLoc = String.format("%d, %d, %d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
-            messaging.sendMessage(p, MessageNode.RALLY_UPDATED_LOCATION, Map.of(
-                    "%player%", player.getName(),
-                    "%location%", strLoc
-            ));
-            playNotificationSound(p, false);
-        });
-    }
+		// Send message and play rally sound
+		players.forEach(pl -> {
+			String strLoc = String.format("%d, %d, %d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
+			messaging.sendMessage(pl, LangNodes.RALLY_UPDATED_LOCATION, Map.of(
+					"%player%", player.getName(),
+					"%location%", strLoc
+			));
+			playNotificationSound(pl, false);
+		});
+	}
 
-    /**
-     * Enables player to receive rally notifications
-     *
-     * @param player
-     */
-    public void enableRallyNotifications(Player player) {
-        if (!ignoredPlayers.containsKey(player.getUniqueId())) {
-            messaging.sendMessage(player, MessageNode.RALLY_ALREADY_ENABLED);
-            return;
-        }
+	/**
+	 * Enables player to receive rally notifications
+	 *
+	 * @param player
+	 */
+	public void enableRallyNotifications(LunarPlayer player) {
+		Player p = player.asPlayer();
+		if (!ignoredPlayers.containsKey(player.getUniqueId())) {
+			messaging.sendMessage(p, LangNodes.RALLY_ALREADY_ENABLED);
+			return;
+		}
 
-        // TODO: Add persistence to rally settings using Towny's metadata api
-        // Resident resident = TownyAPI.getInstance().getResident(player);
+		// TODO: Add persistence to rally settings using Towny's metadata api
+		// Resident resident = TownyAPI.getInstance().getResident(player);
 
-        ignoredPlayers.remove(player.getUniqueId());
-        messaging.sendMessage(player, MessageNode.RALLY_ENABLED);
-        playNotificationSound(player, false);
-    }
+		ignoredPlayers.remove(player.getUniqueId());
+		messaging.sendMessage(p, LangNodes.RALLY_ENABLED);
+		playNotificationSound(p, false);
+	}
 
-    /**
-     * Disables any future rally notifications and removes all existing rallies
-     *
-     * @param player
-     */
-    public void disableRallyNotifications(Player player) {
-        if (ignoredPlayers.containsKey(player.getUniqueId())) {
-            messaging.sendMessage(player, MessageNode.RALLY_ALREADY_DISABLED);
-            return;
-        }
-        ignoredPlayers.put(player.getUniqueId(), player);
+	/**
+	 * Disables any future rally notifications and removes all existing rallies
+	 *
+	 * @param player
+	 */
+	public void disableRallyNotifications(LunarPlayer player) {
+		Player p = player.asPlayer();
+		if (ignoredPlayers.containsKey(player.getUniqueId())) {
+			messaging.sendMessage(p, LangNodes.RALLY_ALREADY_DISABLED);
+			return;
+		}
+		ignoredPlayers.put(player.getUniqueId(), player.apollo());
 
-        // TODO: Add persistence to rally settings using Towny's metadata api
-        // Resident resident = TownyAPI.getInstance().getResident(player);
+		// TODO: Add persistence to rally settings using Towny's metadata api
+		// Resident resident = TownyAPI.getInstance().getResident(player);
 
-        messaging.sendMessage(player, MessageNode.RALLY_DISABLED);
-        for (Siege siege : SiegeWarAPI.getSieges()) {
-            SiegeRally rally = getRally(siege, player);
-            if (rally != null) {
-                rally.removeRecipient(player);
-                break;
-            }
-        }
-        playNotificationSound(player, true);
+		messaging.sendMessage(p, LangNodes.RALLY_DISABLED);
+		for (Siege siege : SiegeWarAPI.getSieges()) {
+			SiegeRally rally = getRally(siege, player);
+			if (rally != null) {
+				rally.removeRecipient(player);
+				break;
+			}
+		}
+		playNotificationSound(p, true);
+	}
 
-    }
+	private SiegeRally getRally(Siege siege, LunarPlayer player) {
+		SiegeSide side = SiegeSide.getPlayerSiegeSide(siege, player.asPlayer());
+		SiegeRallies rallies = siegeRallies.get(siege);
+		return rallies != null ? rallies.getRally(side) : null;
+	}
 
-    private SiegeRally getRally(Siege siege, Player player) {
-        SiegeSide side = SiegeSide.getPlayerSiegeSide(siege, player);
-        SiegeRallies rallies = siegeRallies.get(siege);
-        return rallies != null ? rallies.getRally(side) : null;
-    }
+	private void playNotificationSound(Audience audience, boolean negative) {
+		Key key = Key.key("entity.experience_orb.pickup");
+		Sound sound = Sound.sound(key, Sound.Source.PLAYER, 1f, negative ? 0.01f : 1f);
+		audience.playSound(sound);
+	}
 
-    private void playNotificationSound(Audience audience, boolean negative) {
-        Key key = Key.key("entity.experience_orb.pickup");
-        Sound sound = Sound.sound(key, Sound.Source.PLAYER, 1f, negative ? 0.01f : 1f);
-        audience.playSound(sound);
-    }
+	/**
+	 * Determines a list of all players receiving the rally
+	 */
+	private Set<Player> determineRecipients(Siege siege, SiegeSide side) {
+		Government government = side == SiegeSide.ATTACKERS ? siege.getAttackingNationIfPossibleElseTown() :
+				siege.getDefendingNationIfPossibleElseTown();
 
-    /**
-     * Determines a list of all players receiving the rally
-     */
-    private Set<Player> determineRecipients(Siege siege, SiegeSide side) {
-        Government government = side == SiegeSide.ATTACKERS ? siege.getAttackingNationIfPossibleElseTown() :
-                siege.getDefendingNationIfPossibleElseTown();
+		// Add all other allies only if the target is allies
+		Set<Resident> players = new HashSet<>();
+		if (government instanceof Nation nation) {
+			players.addAll(nation.getMutualAllies()
+					.stream()
+					.flatMap(n -> n.getResidents().stream())
+					.toList());
+		}
 
-        // Add all other allies only if the target is allies
-        Set<Resident> players = new HashSet<>();
-        if (government instanceof Nation nation) {
-            players.addAll(nation.getMutualAllies()
-                    .stream()
-                    .flatMap(n -> n.getResidents().stream())
-                    .toList());
-        }
+		players.addAll(government.getResidents());
+		return players.stream()
+				.map(Resident::getPlayer)
+				.filter(p -> Objects.nonNull(p) && p.isOnline() && !ignoredPlayers.containsKey(p.getUniqueId()) &&
+						SiegeWarDistanceUtil.getActiveSiegeZonePlayerIsRegisteredTo(p) == siege)
+				.collect(Collectors.toSet());
+	}
 
-        players.addAll(government.getResidents());
-        return players.stream()
-                .map(Resident::getPlayer)
-                .filter(p -> Objects.nonNull(p) && p.isOnline() && !ignoredPlayers.containsKey(p.getUniqueId()) &&
-                        SiegeWarDistanceUtil.getActiveSiegeZonePlayerIsRegisteredTo(p) == siege)
-                .collect(Collectors.toSet());
-    }
+	private static class SiegeRallies {
+		private final SiegeRally attacker;
+		private final SiegeRally defender;
 
-    private class SiegeRallies {
-        private final SiegeRally attacker;
-        private final SiegeRally defender;
+		public SiegeRallies(Siege siege) {
+			this.attacker = new SiegeRally(siege);
+			this.defender = new SiegeRally(siege);
+		}
 
-        public SiegeRallies(Siege siege) {
-            this.attacker = new SiegeRally(siege);
-            this.defender = new SiegeRally(siege);
-        }
-
-        public SiegeRally getRally(SiegeSide side) {
-            if (side == SiegeSide.ATTACKERS)
-                return attacker;
-            else if (side == SiegeSide.DEFENDERS)
-                return defender;
-            else
-                return null;
-        }
-    }
+		public SiegeRally getRally(SiegeSide side) {
+			if (side == SiegeSide.ATTACKERS)
+				return attacker;
+			else if (side == SiegeSide.DEFENDERS)
+				return defender;
+			else
+				return null;
+		}
+	}
 }

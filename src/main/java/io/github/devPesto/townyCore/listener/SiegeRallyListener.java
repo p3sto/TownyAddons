@@ -1,17 +1,22 @@
 package io.github.devPesto.townyCore.listener;
 
 import com.gmail.goosius.siegewar.events.SiegeWarStartEvent;
+import com.lunarclient.apollo.Apollo;
 import io.github.devPesto.townyCore.manager.SiegeRallyManager;
-import lombok.AllArgsConstructor;
+import io.github.devPesto.townyCore.objects.LunarPlayer;
+import io.github.devPesto.townyCore.util.ApolloUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-@AllArgsConstructor
 public class SiegeRallyListener implements Listener {
     private final SiegeRallyManager manager;
+
+    public SiegeRallyListener(SiegeRallyManager manager) {
+        this.manager = manager;
+    }
 
     @EventHandler()
     public void onSiegeBegin(SiegeWarStartEvent event) {
@@ -20,12 +25,16 @@ public class SiegeRallyListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
-        manager.addViewer(event.getPlayer());
+        LunarPlayer player = ApolloUtil.getLunarPlayer(event.getPlayer());
+        if (player != null)
+            manager.addViewer(player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
-        manager.removeViewer(event.getPlayer());
+        LunarPlayer player = ApolloUtil.getLunarPlayer(event.getPlayer());
+        if (player != null)
+            manager.removeViewer(player);
     }
 
 }

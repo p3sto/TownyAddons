@@ -15,14 +15,6 @@ public abstract class TownyExpansion {
     }
 
     public void register(TownyCore plugin) throws MissingDependencyException {
-        validateDependencies(plugin);
-        registerPermissions(plugin);
-        registerListeners(plugin);
-        registerCommands(plugin);
-    }
-
-
-    protected void validateDependencies(TownyCore plugin) throws MissingDependencyException {
         List<String> missing = dependencies.stream()
                 .filter(Predicate.not(plugin::isPluginEnabled))
                 .toList();
@@ -31,6 +23,10 @@ public abstract class TownyExpansion {
             String strList = String.join(",", missing);
             throw new MissingDependencyException("Could not register module. Missing dependencies: " + strList);
         }
+
+        registerPermissions(plugin);
+        registerListeners(plugin);
+        registerCommands(plugin);
     }
 
     public String getName() {
