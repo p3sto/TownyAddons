@@ -2,7 +2,7 @@ package io.github.devPesto.townyCore.config.impl;
 
 import io.github.devPesto.townyCore.config.Node;
 
-public enum MessageNode implements Node {
+public enum LangNodes implements Node {
     PREFIX("prefix"),
 
     RALLY_INACTIVE_SIEGE("rally.inactive-siege"),
@@ -16,7 +16,7 @@ public enum MessageNode implements Node {
 
     private final String path;
 
-    MessageNode(String path) {
+    LangNodes(String path) {
         this.path = path;
     }
 
