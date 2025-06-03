@@ -1,32 +1,48 @@
 package io.github.devPesto.townyCore.expansions.impl;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
 import io.github.devPesto.townyCore.TownyCore;
 import io.github.devPesto.townyCore.expansions.TownyExpansion;
-import io.github.devPesto.townyCore.listener.OldCombatListener;
+import org.bukkit.Sound;
+import org.bukkit.event.Listener;
 
-public class OldCombatSoundsExpansion extends TownyExpansion {
-    private static OldCombatListener listener;
+public class OldCombatSoundsExpansion extends TownyExpansion implements Listener {
+    private final ProtocolManager manager;
+    private final PacketAdapter handler;
 
     public OldCombatSoundsExpansion() {
         super("OldCombatSounds", "ProtocolLib");
+
+        this.manager = ProtocolLibrary.getProtocolManager();
+        this.handler = new PacketAdapter(TownyCore.getInstance(), PacketType.Play.Server.NAMED_SOUND_EFFECT) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                PacketContainer packet = event.getPacket().deepClone();
+                final Sound sound = packet.getSoundEffects().read(0);
+                switch (sound) {
+                    case ENTITY_PLAYER_ATTACK_NODAMAGE:
+                    case ENTITY_PLAYER_ATTACK_SWEEP:
+                    case ENTITY_PLAYER_ATTACK_WEAK:
+                    case ENTITY_PLAYER_ATTACK_STRONG:
+                    case ENTITY_PLAYER_ATTACK_KNOCKBACK:
+                        event.setCancelled(true);
+                }
+            }
+        };
     }
 
     @Override
     public void registerListeners(TownyCore plugin) {
-        listener = getListener(plugin);
-        listener.register();
+        manager.addPacketListener(handler);
     }
 
     @Override
     public void unregisterListeners(TownyCore plugin) {
-        listener = getListener(plugin);
-        listener.unregister();
-    }
-
-    private OldCombatListener getListener(TownyCore plugin) {
-        if (listener == null) {
-            listener = new OldCombatListener(plugin);
-        }
-        return listener;
+        manager.removePacketListener(handler);
     }
 }
