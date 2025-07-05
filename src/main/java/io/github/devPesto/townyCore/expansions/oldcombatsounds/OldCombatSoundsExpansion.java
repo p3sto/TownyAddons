@@ -1,4 +1,4 @@
-package io.github.devPesto.townyCore.expansions.impl;
+package io.github.devPesto.townyCore.expansions.oldcombatsounds;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -7,19 +7,19 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import io.github.devPesto.townyCore.TownyCore;
-import io.github.devPesto.townyCore.expansions.TownyExpansion;
+import io.github.devPesto.townyCore.TownyExpansion;
 import org.bukkit.Sound;
 import org.bukkit.event.Listener;
 
 public class OldCombatSoundsExpansion extends TownyExpansion implements Listener {
     private final ProtocolManager manager;
-    private final PacketAdapter handler;
+    private final PacketAdapter listener;
 
     public OldCombatSoundsExpansion() {
         super("OldCombatSounds", "ProtocolLib");
 
         this.manager = ProtocolLibrary.getProtocolManager();
-        this.handler = new PacketAdapter(TownyCore.getInstance(), PacketType.Play.Server.NAMED_SOUND_EFFECT) {
+        this.listener = new PacketAdapter(TownyCore.getInstance(), PacketType.Play.Server.NAMED_SOUND_EFFECT) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket().deepClone();
@@ -38,11 +38,11 @@ public class OldCombatSoundsExpansion extends TownyExpansion implements Listener
 
     @Override
     public void registerListeners(TownyCore plugin) {
-        manager.addPacketListener(handler);
+        manager.addPacketListener(listener);
     }
 
     @Override
     public void unregisterListeners(TownyCore plugin) {
-        manager.removePacketListener(handler);
+        manager.removePacketListener(listener);
     }
 }

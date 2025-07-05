@@ -1,7 +1,7 @@
 package io.github.devPesto.townyCore.commands;
 
 import io.github.devPesto.townyCore.TownyCore;
-import io.github.devPesto.townyCore.config.impl.LangConfiguration;
+import io.github.devPesto.townyCore.config.impl.Locale;
 import org.bukkit.command.CommandSender;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Subcommand;
@@ -30,18 +30,15 @@ public class TownyCoreCommand {
     }
 
     private void reloadMessages() {
-        LangConfiguration messaging = plugin.getLangConfiguration();
+        Locale messaging = plugin.getLocale();
         messaging.reload(plugin);
     }
 
     private void reloadConfig() {
-        plugin.getConfiguration().reload(plugin);
+        plugin.getSettings().reload(plugin);
     }
 
     public enum ReloadType {
         ALL, CONFIG, MESSAGES
     }
-
-
-
 }
