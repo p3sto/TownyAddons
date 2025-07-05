@@ -13,12 +13,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-public abstract class Config {
+public abstract class Configuration {
 	private final String filePath;
 	private final Logger logger;
 	protected YamlDocument config;
 
-	public Config(Plugin plugin, String filePath) {
+	public Configuration(Plugin plugin, String filePath) {
 		this.filePath = filePath;
 		this.logger = plugin.getLogger();
 		this.config = createOrLoadConfig(plugin, filePath);
@@ -29,7 +29,7 @@ public abstract class Config {
 		try (InputStream is = plugin.getResource(fileName)) {
 			if (is != null)
 				config = YamlDocument.create(new File(plugin.getDataFolder(), fileName), is,
-						GeneralSettings.DEFAULT,
+						GeneralSettings.builder().setUseDefaults(false).build(),
 						LoaderSettings.builder().setAutoUpdate(true).build(),
 						DumperSettings.DEFAULT,
 						UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version"))

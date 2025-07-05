@@ -1,6 +1,7 @@
 package io.github.devPesto.townyCore.config.impl;
 
-import io.github.devPesto.townyCore.config.Config;
+import io.github.devPesto.townyCore.config.Configuration;
+import io.github.devPesto.townyCore.config.Node;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -8,12 +9,12 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Map;
 
-public class LangConfiguration extends Config {
+public class Locale extends Configuration {
 	private final MiniMessage mm = MiniMessage.miniMessage();
 	private Component prefix;
 
-	public LangConfiguration(Plugin plugin) {
-		super(plugin, "lang.yml");
+	public Locale(Plugin plugin) {
+		super(plugin, "locale.yml");
 		reloadPrefix();
 	}
 
@@ -66,5 +67,29 @@ public class LangConfiguration extends Config {
 	public void reload(Plugin plugin) {
 		super.reload(plugin);
 		reloadPrefix();
+	}
+
+	public enum LangNodes implements Node {
+		PREFIX("prefix"),
+
+		RALLY_INACTIVE_SIEGE("rally.inactive-siege"),
+		RALLY_NON_PARTICIPANT("rally.non-participant"),
+		RALLY_ENABLED("rally.enabled"),
+		RALLY_DISABLED("rally.disabled"),
+		RALLY_ALREADY_ENABLED("rally.already-enabled"),
+		RALLY_ALREADY_DISABLED("rally.already-disabled"),
+		RALLY_UPDATED_LOCATION("rally.updated-location"),
+		;
+
+		private final String path;
+
+		LangNodes(String path) {
+			this.path = path;
+		}
+
+		@Override
+		public String getPath() {
+			return path;
+		}
 	}
 }
