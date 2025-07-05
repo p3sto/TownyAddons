@@ -1,6 +1,4 @@
-package io.github.devPesto.townyCore.expansions;
-
-import io.github.devPesto.townyCore.TownyCore;
+package io.github.devPesto.townyCore;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -51,16 +49,8 @@ public abstract class TownyExpansion {
 
     public static class MissingDependencyException extends RuntimeException {
 
-        public MissingDependencyException() {
-            super();
-        }
-
         public MissingDependencyException(String message) {
             super(message);
-        }
-
-        public MissingDependencyException(Throwable cause) {
-            super(cause);
         }
     }
 }

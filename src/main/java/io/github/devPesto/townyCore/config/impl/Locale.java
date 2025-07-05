@@ -23,19 +23,19 @@ public class Locale extends Configuration {
 	}
 
 	private void reloadPrefix() {
-		String config = getString(LangNodes.PREFIX);
+		String config = getString(Nodes.PREFIX);
 		this.prefix = !config.isBlank() ? mm.deserialize(config) : Component.empty();
 	}
 
-	public void sendMessage(Audience audience, LangNodes node) {
+	public void sendMessage(Audience audience, Nodes node) {
 		sendMessage(audience, node, null);
 	}
 
-	public void sendMessage(Audience audience, LangNodes node, Map<String, String> replacements) {
+	public void sendMessage(Audience audience, Nodes node, Map<String, String> replacements) {
 		sendMessage(audience, node, true, replacements);
 	}
 
-	public void sendMessage(Audience audience, LangNodes node, boolean prefixed) {
+	public void sendMessage(Audience audience, Nodes node, boolean prefixed) {
 		sendMessage(audience, node, prefixed, null);
 	}
 
@@ -44,10 +44,10 @@ public class Locale extends Configuration {
 	 * @param node
 	 * @param replacements
 	 */
-	public void sendMessage(Audience audience, LangNodes node, boolean prefixed, Map<String, String> replacements) {
+	public void sendMessage(Audience audience, Nodes node, boolean prefixed, Map<String, String> replacements) {
 		String result = "";
 		if (prefixed)
-			result += getString(LangNodes.PREFIX);
+			result += getString(Nodes.PREFIX);
 
 		result += getString(node);
 		if (replacements != null && !replacements.isEmpty()) {
@@ -69,7 +69,7 @@ public class Locale extends Configuration {
 		reloadPrefix();
 	}
 
-	public enum LangNodes implements Node {
+	public enum Nodes implements Node {
 		PREFIX("prefix"),
 
 		RALLY_INACTIVE_SIEGE("rally.inactive-siege"),
@@ -83,7 +83,7 @@ public class Locale extends Configuration {
 
 		private final String path;
 
-		LangNodes(String path) {
+		Nodes(String path) {
 			this.path = path;
 		}
 

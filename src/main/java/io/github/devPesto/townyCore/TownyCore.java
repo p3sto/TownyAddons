@@ -1,12 +1,12 @@
 package io.github.devPesto.townyCore;
 
 import io.github.devPesto.townyCore.commands.TownyCoreCommand;
-import io.github.devPesto.townyCore.config.impl.LangConfiguration;
-import io.github.devPesto.townyCore.config.impl.PluginConfiguration;
-import io.github.devPesto.townyCore.expansions.TownyExpansionManager;
+import io.github.devPesto.townyCore.config.impl.Locale;
+import io.github.devPesto.townyCore.config.impl.Settings;
 import io.github.devPesto.townyCore.util.ApolloUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import revxrsal.commands.Lamp;
 import revxrsal.commands.bukkit.BukkitLamp;
@@ -14,8 +14,8 @@ import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 import revxrsal.commands.process.MessageSender;
 
 public final class TownyCore extends JavaPlugin {
-	private PluginConfiguration configuration;
-	private LangConfiguration messaging;
+	private Settings configuration;
+	private Locale messaging;
 	private TownyExpansionManager expansions;
 	private Lamp<BukkitCommandActor> commandHandler;
 	private static TownyCore instance;
@@ -23,8 +23,8 @@ public final class TownyCore extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
-		this.configuration = new PluginConfiguration(this);
-		this.messaging = new LangConfiguration(this);
+		this.configuration = new Settings(this);
+		this.messaging = new Locale(this);
 		this.expansions = new TownyExpansionManager(this);
 
 		Lamp.Builder<BukkitCommandActor> builder = BukkitLamp.builder(this);
@@ -63,15 +63,19 @@ public final class TownyCore extends JavaPlugin {
 		return commandHandler;
 	}
 
-	public LangConfiguration getLangConfiguration() {
+	public Locale getLocale() {
 		return messaging;
 	}
 
-	public PluginConfiguration getConfiguration() {
+	public Settings getSettings() {
 		return configuration;
 	}
 
 	public TownyExpansionManager getExpansionManager() {
 		return expansions;
+	}
+
+	public void registerEvents(Listener listener) {
+		getServer().getPluginManager().registerEvents(listener, this);
 	}
 }

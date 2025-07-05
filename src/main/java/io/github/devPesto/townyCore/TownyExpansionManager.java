@@ -1,28 +1,26 @@
-package io.github.devPesto.townyCore.expansions;
+package io.github.devPesto.townyCore;
 
-import io.github.devPesto.townyCore.TownyCore;
-import io.github.devPesto.townyCore.config.Config;
-import io.github.devPesto.townyCore.config.impl.PluginNodes;
-import io.github.devPesto.townyCore.expansions.impl.MinerKitExpansion;
-import io.github.devPesto.townyCore.expansions.impl.OldCombatSoundsExpansion;
-import io.github.devPesto.townyCore.expansions.impl.SiegeRallyExpansion;
+import io.github.devPesto.townyCore.config.impl.Settings;
+import io.github.devPesto.townyCore.expansions.minerkit.MinerKitExpansion;
+import io.github.devPesto.townyCore.expansions.oldcombatsounds.OldCombatSoundsExpansion;
+import io.github.devPesto.townyCore.expansions.siegerally.SiegeRallyExpansion;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static io.github.devPesto.townyCore.expansions.TownyExpansion.MissingDependencyException;
+import static io.github.devPesto.townyCore.TownyExpansion.MissingDependencyException;
 
 public class TownyExpansionManager {
 	private final Map<String, TownyExpansion> expansionMap;
 	private final TownyCore plugin;
 	private final Logger logger;
-	private final Config config;
+	private final Settings settings;
 
 	public TownyExpansionManager(TownyCore plugin) {
 		this.plugin = plugin;
 		this.logger = plugin.getLogger();
-		this.config = plugin.getConfiguration();
+		this.settings = plugin.getSettings();
 		this.expansionMap = loadExpansions();
 	}
 
@@ -53,15 +51,15 @@ public class TownyExpansionManager {
 	private Map<String, TownyExpansion> loadExpansions() {
 		// Miner Kit
 		Map<String, TownyExpansion> map = new HashMap<>();
-		if (config.getBoolean(PluginNodes.EXPANSION_ENABLE_MINER_KIT))
+		if (settings.enableMinerKit())
 			map.put("MinerKit", new MinerKitExpansion());
 
 		// OldCombatSounds
-		if (config.getBoolean(PluginNodes.EXPANSION_ENABLE_OC_SOUNDS))
+		if (settings.enableOldCombatSounds())
 			map.put("OldCombatSounds", new OldCombatSoundsExpansion());
 
 		// Rallies
-		if (config.getBoolean(PluginNodes.EXPANSION_ENABLE_RALLIES))
+		if (settings.enableRallies())
 			map.put("SiegeRally", new SiegeRallyExpansion());
 
 		return map;

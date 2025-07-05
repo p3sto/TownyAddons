@@ -1,37 +1,39 @@
 plugins {
-    id 'java'
-    id 'com.gradleup.shadow' version '9.0.0-beta6'
+    id "java"
+    id "com.gradleup.shadow" version "9.0.0-beta6"
 }
 
-group = 'io.github.devPesto'
-version = '1.0.0'
+group = "io.github.devPesto"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
-    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
-    maven { url = 'https://oss.sonatype.org/content/groups/public/' }
-    maven { url = 'https://jitpack.io' }
-    maven { url = 'https://repo.glaremasters.me/repository/towny/' }
-    maven { url = 'https://repo.triumphteam.dev/snapshots/' }
-    maven { url = 'https://repo.mikeprimm.com/' }
-    maven { url = 'https://repo.lunarclient.dev' }
-    maven { url = 'https://repo.dmulloy2.net/repository/public/' }
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    maven { url = "https://oss.sonatype.org/content/groups/public/" }
+    maven { url = "https://jitpack.io" }
+    maven { url = "https://repo.glaremasters.me/repository/towny/" }
+    maven { url = "https://repo.triumphteam.dev/snapshots/" }
+    maven { url = "https://repo.mikeprimm.com/" }
+    maven { url = "https://repo.lunarclient.dev" }
+    maven { url = "https://repo.dmulloy2.net/repository/public/" }
 }
 
 dependencies {
-    compileOnly 'io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT'
-    compileOnly 'com.palmergames.bukkit.towny:towny:0.100.3.0'
-    compileOnly 'com.github.TownyAdvanced:SiegeWar:2.12.0'
-    compileOnly 'com.lunarclient:apollo-api:1.1.8'
-    compileOnly 'com.comphenix.protocol:ProtocolLib:5.1.0'
-    implementation 'dev.dejvokep:boosted-yaml:1.3.6'
-    implementation 'io.github.revxrsal:lamp.common:4.0.0-rc.6'
-    implementation 'io.github.revxrsal:lamp.bukkit:4.0.0-rc.6'
-    implementation 'io.github.revxrsal:lamp.brigadier:4.0.0-rc.6'
+    compileOnly "io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT"
+    compileOnly "com.palmergames.bukkit.towny:towny:0.100.3.0"
+    compileOnly "com.github.TownyAdvanced:SiegeWar:2.12.0"
+    compileOnly "com.lunarclient:apollo-api:1.1.8"
+    compileOnly "com.comphenix.protocol:ProtocolLib:5.1.0"
+    implementation "dev.dejvokep:boosted-yaml:1.3.6"
+
+    def lampVersion = "4.0.0-rc.12"
+    implementation "io.github.revxrsal:lamp.common:$lampVersion"
+    implementation "io.github.revxrsal:lamp.bukkit:$lampVersion"
+    implementation "io.github.revxrsal:lamp.brigadier:$lampVersion"
 }
 
 compileJava {
-    options.compilerArgs += ['-parameters']
+    options.compilerArgs += ["-parameters"]
 }
 
 java {
@@ -39,12 +41,12 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+    options.encoding = "UTF-8"
     options.release.set(21)
 }
 
 shadowJar {
-    setArchiveClassifier('')
+    setArchiveClassifier("")
 }
 
 build {
