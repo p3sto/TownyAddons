@@ -40,9 +40,9 @@ public class Locale extends Configuration {
 	}
 
 	/**
-	 * @param audience
-	 * @param node
-	 * @param replacements
+	 * @param audience the target to receive the message
+	 * @param node the YAML path defined in locale.yml
+	 * @param replacements a {@link Map} of text replacements where each key is replaced with it value
 	 */
 	public void sendMessage(Audience audience, Nodes node, boolean prefixed, Map<String, String> replacements) {
 		String result = "";

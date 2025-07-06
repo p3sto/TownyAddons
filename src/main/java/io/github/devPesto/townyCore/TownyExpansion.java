@@ -1,5 +1,6 @@
 package io.github.devPesto.townyCore;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -10,6 +11,11 @@ public abstract class TownyExpansion {
     public TownyExpansion(String name, String... dependencies) {
         this.name = name;
         this.dependencies = List.of(dependencies);
+    }
+
+    public TownyExpansion(String name) {
+        this.name = name;
+        this.dependencies = Collections.emptyList();
     }
 
     public void register(TownyCore plugin) throws MissingDependencyException {
