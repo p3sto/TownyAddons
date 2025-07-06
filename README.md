@@ -14,9 +14,6 @@ Dependencies: `ProtocolLib`
 ### Messaging
 **Adds simple, efficient and configurable private messaging to your servers**  
 
-<details>
-    <summary>Commands</summary>
-
 | Command Syntax                | Description                                            | Aliases                  | Permission                    |
 |--------------------------------|--------------------------------------------------------|--------------------------|-------------------------------|
 | `/message <target> <message>`  | Sends a private message to the target player           | msg, whisper, w, tell, t | `townycore.command.message`     |
@@ -25,8 +22,6 @@ Dependencies: `ProtocolLib`
 | `/unignore <target>`           | Allows receiving messages from previously ignored players | unblock                | `townycore.command.unignore`    |
 | `/msgtoggle`                   | Toggle message receiving                               |                          | `townycore.command.msgtoggle`   |
 
-
-</details>
 <br>
 
 ### Miner Kit
