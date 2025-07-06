@@ -79,6 +79,18 @@ public class Locale extends Configuration {
 		RALLY_ALREADY_ENABLED("rally.already-enabled"),
 		RALLY_ALREADY_DISABLED("rally.already-disabled"),
 		RALLY_UPDATED_LOCATION("rally.updated-location"),
+
+		MESSAGES_FORMAT("messages.format"),
+		MESSAGES_NO_REPLY("messages.no-reply"),
+		MESSAGES_OFFLINE_REPLY("messages.offline-reply"),
+		MESSAGES_DISABLED("messages.disabled"),
+		MESSAGES_TOGGLED_ON("messages.toggled-on"),
+		MESSAGES_TOGGLED_OFF("messages.toggled-off"),
+		MESSAGES_IGNORED_PLAYER("messages.ignored-player"),
+		MESSAGES_ALREADY_IGNORED("messages.already-ignored"),
+		MESSAGES_UNIGNORED_PLAYER("messages.unignored-player"),
+		MESSAGES_ALREADY_UNIGNORED("messages.already-unignored"),
+
 		;
 
 		private final String path;

@@ -13,5 +13,17 @@ rally:
     already-disabled: <red>You already have siege rallies disabled
     updated-location: <gold>%player%<gray> has updated the rally to <gold>%location% <gray> which will despawn in %time%
 
+messages:
+    format: <gold>[<red>%sender%<gold>-><red>%target%<gold>] <white>%message%
+    no-reply: <red>There is no one to reply to
+    offline-reply: <red>Player has gone offline
+    disabled: <red>%player% has messages disabled
+    toggled-on: <green>Enabled receiving private messages
+    toggled-off: <red>Disabled receiving private messages
+    ignored-player: <green>Ignoring messages from %player%
+    already-ignored: <red>Already ignoring messages from %player%
+    unignored-player: <green>No longer ignoring messages from %player%
+    already-unignored: <red>%player% was not previously ignored 
+
 # DO NOT MODIFY
 config-version: 1

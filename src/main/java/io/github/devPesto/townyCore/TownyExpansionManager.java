@@ -1,6 +1,7 @@
 package io.github.devPesto.townyCore;
 
 import io.github.devPesto.townyCore.config.impl.Settings;
+import io.github.devPesto.townyCore.expansions.messaging.MessagingExpansion;
 import io.github.devPesto.townyCore.expansions.minerkit.MinerKitExpansion;
 import io.github.devPesto.townyCore.expansions.oldcombatsounds.OldCombatSoundsExpansion;
 import io.github.devPesto.townyCore.expansions.siegerally.SiegeRallyExpansion;
@@ -61,6 +62,10 @@ public class TownyExpansionManager {
 		// Rallies
 		if (settings.enableRallies())
 			map.put("SiegeRally", new SiegeRallyExpansion());
+
+		// Messaging
+		if (settings.enableMessaging())
+			map.put("Messaging", new MessagingExpansion());
 
 		return map;
 	}
